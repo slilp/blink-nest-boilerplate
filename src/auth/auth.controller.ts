@@ -1,26 +1,25 @@
-import {
-  Body,
-  Controller,
-  HttpCode,
-  HttpStatus,
-  Post,
-  Request,
-  UseGuards,
-} from '@nestjs/common';
+import { Controller, Post, Get, Request, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { ApiCreatedResponse } from '@nestjs/swagger';
-import { UserEntity } from 'src/models/user.entity';
-import { LoginUserDto } from './dto/login-user.dto';
 import { LocalAuthGuard } from './guards/local-auth.guard';
-import { ApiKeyGuard } from './guards/api-key.guard';
+import { RefreshTokenGuard } from './guards/refresh-auth.guard';
 
 @Controller('auth')
 export class AuthController {
+  constructor(private authService: AuthService) {}
+
   @UseGuards(LocalAuthGuard)
-  @Post('signin')
-  @HttpCode(HttpStatus.CREATED)
+  @Post('login')
   @ApiCreatedResponse()
-  loginStudent(@Request() req) {
+  login(@Request() req) {
     return req.user;
+  }
+
+  @UseGuards(RefreshTokenGuard)
+  @Get('refresh')
+  @ApiCreatedResponse()
+  refreshTokens(@Request() req) {
+    const user = req.user;
+    return this.authService.refreshTokens(user.id);
   }
 }

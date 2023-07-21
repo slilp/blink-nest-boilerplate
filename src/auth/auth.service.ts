@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ForbiddenException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -21,6 +22,7 @@ export class AuthService {
   async signIn(loginUserDto: LoginUserDto): Promise<{
     user: Omit<UserEntity, 'password'>;
     accessToken: string;
+    refreshToken: string;
   }> {
     const userInfo = await this.userRepository.findOne({
       where: { username: loginUserDto.username },
@@ -43,6 +45,30 @@ export class AuthService {
     return {
       user: userInfo,
       accessToken: this.jwtService.sign(payload),
+      refreshToken: this.jwtService.sign(payload, {
+        secret: 'JWT_REFRESH_SECRET',
+        expiresIn: '1d',
+      }),
+    };
+  }
+
+  async refreshTokens(userId: string) {
+    const userInfo = await this.userRepository.findOne({
+      where: { id: userId },
+    });
+    if (!userInfo) {
+      throw new ForbiddenException('Access Denied');
+    }
+
+    delete userInfo.password;
+    const payload = { data: JSON.stringify(userInfo) };
+    return {
+      user: userInfo,
+      accessToken: this.jwtService.sign(payload),
+      refreshToken: this.jwtService.sign(payload, {
+        secret: 'JWT_REFRESH_SECRET',
+        expiresIn: '1d',
+      }),
     };
   }
 }
