@@ -14,7 +14,6 @@ import { ProductService } from './product.service';
 import { SearchProductDto } from './dto/search-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
-import { IsUUID } from 'class-validator';
 import { UuidParamDto } from 'src/common/dto/uuidParam.dto';
 
 @Controller('product')

@@ -10,25 +10,21 @@ import {
 import { UserEntity } from './user.entity';
 import { ProductEntity } from './product.entity';
 
+export enum OrderStatus {
+  DRAFTED = 'DRAFTED',
+  PROCESSING = 'PROCESSING',
+  DELIVERING = 'DELIVERING',
+  REJECTED = 'REJECTED',
+  COMPLETED = 'COMPLETED',
+}
+
 @Entity({ name: 'order' })
 export class OrderEntity extends AbstractDto {
-  @Column()
-  sku: string;
-
-  @Column()
-  name: string;
-
-  @Column({ nullable: true })
-  description?: string;
-
-  @Column({ nullable: true })
-  pic?: string;
-
   @Column({ type: 'decimal', default: 99999999 })
-  price: number;
+  total: number;
 
-  @Column({ nullable: true })
-  isAvailable?: boolean;
+  @Column({ type: 'enum', nullable: true, enum: OrderStatus })
+  status: OrderStatus;
 
   @ManyToOne(() => UserEntity, (user) => user.orders)
   @JoinColumn({ name: 'userId' })
@@ -38,11 +34,11 @@ export class OrderEntity extends AbstractDto {
   @JoinTable({
     name: 'order_products',
     joinColumn: {
-      name: 'order_id',
+      name: 'orderId',
       referencedColumnName: 'id',
     },
     inverseJoinColumn: {
-      name: 'product_id',
+      name: 'productId',
       referencedColumnName: 'id',
     },
   })
