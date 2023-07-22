@@ -2,7 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
-import { ValidationPipe, HttpStatus } from '@nestjs/common';
+import { ValidationPipe, HttpStatus, INestApplication } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
@@ -27,14 +27,20 @@ async function bootstrap() {
     }),
   );
 
-  const options = new DocumentBuilder()
-    .setTitle('NestJS Example')
-    .setDescription('This API is just an example case')
-    .setVersion('1.0')
-    .build();
-  const document = SwaggerModule.createDocument(app, options);
-  SwaggerModule.setup('api', app, document);
+  setupOpenApi(app);
+  const port = process.env.PORT || 3000;
 
-  await app.listen(3000);
+  await app.listen(port);
 }
 bootstrap();
+
+function setupOpenApi(app: INestApplication) {
+  const config = new DocumentBuilder()
+    .setTitle('Blink NestJS Boilerplate')
+    .setDescription('This API is just an example case')
+    .setVersion('1.0')
+    .addTag('api')
+    .build();
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('openApi', app, document, { useGlobalPrefix: true });
+}

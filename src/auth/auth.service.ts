@@ -44,10 +44,13 @@ export class AuthService {
     const payload = { data: JSON.stringify(userInfo) };
     return {
       user: userInfo,
-      accessToken: this.jwtService.sign(payload),
+      accessToken: this.jwtService.sign(payload, {
+        secret: process.env.JWT_SECRET_KEY,
+        expiresIn: Number(process.env.JWT_EXPIRATION_TIME),
+      }),
       refreshToken: this.jwtService.sign(payload, {
-        secret: 'JWT_REFRESH_SECRET',
-        expiresIn: '1d',
+        secret: process.env.REFRESH_JWT_SECRET_KEY,
+        expiresIn: Number(process.env.JWT_REFRESH_EXPIRATION_TIME),
       }),
     };
   }
@@ -64,10 +67,13 @@ export class AuthService {
     const payload = { data: JSON.stringify(userInfo) };
     return {
       user: userInfo,
-      accessToken: this.jwtService.sign(payload),
+      accessToken: this.jwtService.sign(payload, {
+        secret: process.env.JWT_SECRET_KEY,
+        expiresIn: Number(process.env.JWT_EXPIRATION_TIME),
+      }),
       refreshToken: this.jwtService.sign(payload, {
-        secret: 'JWT_REFRESH_SECRET',
-        expiresIn: '1d',
+        secret: process.env.REFRESH_JWT_SECRET_KEY,
+        expiresIn: Number(process.env.JWT_REFRESH_EXPIRATION_TIME),
       }),
     };
   }

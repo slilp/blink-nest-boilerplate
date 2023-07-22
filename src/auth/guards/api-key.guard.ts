@@ -19,6 +19,6 @@ export class ApiKeyGuard implements CanActivate {
     }
     const request = context.switchToHttp().getRequest<Request>();
     const authHeader = request.header('Api-Key');
-    return authHeader === 'PRIVATE_KEY';
+    return authHeader === process.env.API_KEY;
   }
 }

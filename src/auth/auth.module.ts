@@ -13,10 +13,7 @@ import { RefreshTokenStrategy } from './strategies/refreshToken.strategy';
   imports: [
     TypeOrmModule.forFeature([UserEntity]),
     PassportModule,
-    JwtModule.register({
-      secret: 'TEST',
-      signOptions: { expiresIn: '60m' },
-    }),
+    JwtModule.register({}),
   ],
   controllers: [AuthController],
   providers: [
