@@ -7,20 +7,20 @@ import {
   Post,
   Put,
   Query,
-  UseGuards,
 } from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
 import { ProductService } from './product.service';
 import { SearchProductDto } from './dto/search-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { UuidParamDto } from 'src/common/dto/uuidParam.dto';
+import { Auth } from 'src/auth/guards/auth';
+import { RoleType } from 'src/common/constants';
 
 @Controller('product')
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
 
-  @UseGuards(JwtAuthGuard)
+  @Auth([RoleType.ADMIN])
   @Post()
   create(@Body() createProductDto: CreateProductDto) {
     return this.productService.create(createProductDto);
@@ -36,7 +36,7 @@ export class ProductController {
     return this.productService.findOne(id + '');
   }
 
-  @UseGuards(JwtAuthGuard)
+  @Auth([RoleType.ADMIN])
   @Put(':id')
   update(
     @Param() params: UuidParamDto,
@@ -45,7 +45,7 @@ export class ProductController {
     return this.productService.update(params.id, updateProductDto);
   }
 
-  @UseGuards(JwtAuthGuard)
+  @Auth([RoleType.ADMIN])
   @Delete(':id')
   remove(@Param() params: UuidParamDto) {
     return this.productService.remove(params.id);

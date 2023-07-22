@@ -11,7 +11,6 @@ import { PaginationResponseDto } from 'src/common/dto/pagination.dto';
 import { UserEntity } from 'src/models/user.entity';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { ProductEntity } from 'src/models/product.entity';
-import { UpdateOrderDto } from './dto/update-order.dto';
 
 @Injectable()
 export class OrderService {
@@ -92,29 +91,24 @@ export class OrderService {
   }
 
   public async updateOrderProducts(
+    userId: string,
     id: string,
     updateOrderDto: ProductEntity[],
-  ): Promise<OrderEntity> {
+  ): Promise<void> {
     const updateObject = await this.orderRepository.findOne({
-      where: { id: id },
+      where: { id: id, user: { id: userId } },
       relations: ['products'],
     });
+    if (!updateObject) throw new NotFoundException(`order ${id} not found`);
     updateObject.products = updateOrderDto;
-    const updateResult = await this.orderRepository.save(updateObject);
-    return await this.orderRepository.findOne({
-      where: { id: updateResult.id },
-    });
+    await this.orderRepository.save(updateObject);
   }
 
-  public async updateStatus(
-    id: string,
-    status: OrderStatus,
-  ): Promise<OrderEntity> {
+  public async updateStatus(id: string, status: OrderStatus): Promise<void> {
     const updateResult = await this.orderRepository.update({ id }, { status });
     if (updateResult.affected === 0) {
       throw new NotFoundException(`order ${id} not found`);
     }
-    return updateResult.raw[0];
   }
 
   public async remove(id: string) {
