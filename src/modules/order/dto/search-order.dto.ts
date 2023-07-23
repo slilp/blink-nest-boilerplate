@@ -1,6 +1,10 @@
-import { IsInt, IsOptional, IsString, IsUUID, Min } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
+import { IsInt, IsOptional, IsUUID, Min } from 'class-validator';
 
 export class SearchOrderDto {
+  @ApiProperty({
+    required: false,
+  })
   @IsOptional()
   @IsUUID()
   orderId: string;

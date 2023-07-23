@@ -1,6 +1,10 @@
-import { IsInt, IsOptional, IsPositive, IsString, Min } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
+import { IsInt, IsOptional, IsString, Min } from 'class-validator';
 
 export class SearchProductDto {
+  @ApiProperty({
+    required: false,
+  })
   @IsOptional()
   @IsString()
   search: string;

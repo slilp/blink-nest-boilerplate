@@ -44,6 +44,7 @@ export class ProductController {
     @Param() params: UuidParamDto,
     @Body() updateProductDto: UpdateProductDto,
   ) {
+    console.log('updateProductDto', updateProductDto);
     return this.productService.update(params.id, updateProductDto);
   }
 
