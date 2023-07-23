@@ -34,8 +34,8 @@ export class ProductController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: number) {
-    return this.productService.findOne(id + '');
+  findOne(@Param() params: UuidParamDto) {
+    return this.productService.findOne(params.id);
   }
 
   @Auth([RoleType.ADMIN])
