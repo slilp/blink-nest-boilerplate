@@ -7,7 +7,7 @@ import {
   Body,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { RefreshTokenGuard } from './guards/refresh-auth.guard';
 import { LoginUserDto } from './dto/login-user.dto';
@@ -29,6 +29,7 @@ export class AuthController {
   }
 
   @UseGuards(RefreshTokenGuard)
+  @ApiBearerAuth()
   @Get('refresh')
   @ApiCreatedResponse()
   refreshTokens(@Request() req) {
