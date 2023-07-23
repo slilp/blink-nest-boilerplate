@@ -1,4 +1,4 @@
-# Ready to Go Dashboard
+# Nest.JS Boilerplate
 
 Live Demo 👉 [https://blink-nest-boilerplate.adaptable.app/api](https://blink-nest-boilerplate.adaptable.app/api)
 
