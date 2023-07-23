@@ -13,8 +13,12 @@ import { ConfigModule } from '@nestjs/config';
   imports: [
     ConfigModule.forRoot(),
     TypeOrmModule.forRoot({
+      host: process.env.DB_HOST,
       type: 'postgres',
-      url: process.env.DATABASE_URL,
+      port: Number(process.env.DB_TYPE),
+      username: process.env.DB_USERNAME,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_DATABASE,
       synchronize: true,
       entities: ['dist/**/*.entity{.ts,.js}'],
     }),
