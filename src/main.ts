@@ -7,6 +7,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  app.enableCors();
   app.use(helmet());
   app.use(
     rateLimit({
@@ -37,10 +38,13 @@ bootstrap();
 function setupOpenApi(app: INestApplication) {
   const config = new DocumentBuilder()
     .setTitle('Blink NestJS Boilerplate')
-    .setDescription('This API is just an example case')
-    .setVersion('1.0')
-    .addTag('api')
+    .setDescription(
+      'This API is just an example case.For more information please contact https://www.blink-me-code.dev/contact',
+    )
+    .setVersion(process.env.API_VERSION)
+    .addBearerAuth()
+    .setExternalDoc('Postman Collection', '/api-json')
     .build();
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('openApi', app, document, { useGlobalPrefix: true });
+  SwaggerModule.setup('api', app, document);
 }

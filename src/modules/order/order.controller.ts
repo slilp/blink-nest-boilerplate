@@ -18,7 +18,9 @@ import { UuidParamDto } from 'src/common/dto/uuidParam.dto';
 import { UpdateOrderDto, UpdateOrderStatusDto } from './dto/update-order.dto';
 import { Auth } from 'src/auth/guards/auth';
 import { RoleType } from 'src/common/constants';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Order')
 @UseGuards(JwtAuthGuard)
 @Controller('order')
 export class OrderController {

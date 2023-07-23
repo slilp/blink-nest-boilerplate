@@ -1,0 +1,644 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/auth/login": {
+      "post": {
+        "operationId": "AuthController_login",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/LoginUserDto" }
+            }
+          }
+        },
+        "responses": { "201": { "description": "" } },
+        "tags": ["Auth"]
+      }
+    },
+    "/auth/refresh": {
+      "get": {
+        "operationId": "AuthController_refreshTokens",
+        "parameters": [],
+        "responses": {
+          "200": { "description": "" },
+          "201": { "description": "" }
+        },
+        "tags": ["Auth"]
+      }
+    },
+    "/health": {
+      "get": {
+        "operationId": "HealthCheckController_check",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "The Health Check is successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "string", "example": "ok" },
+                    "info": {
+                      "type": "object",
+                      "example": { "database": { "status": "up" } },
+                      "additionalProperties": {
+                        "type": "object",
+                        "properties": { "status": { "type": "string" } },
+                        "additionalProperties": { "type": "string" }
+                      },
+                      "nullable": true
+                    },
+                    "error": {
+                      "type": "object",
+                      "example": {},
+                      "additionalProperties": {
+                        "type": "object",
+                        "properties": { "status": { "type": "string" } },
+                        "additionalProperties": { "type": "string" }
+                      },
+                      "nullable": true
+                    },
+                    "details": {
+                      "type": "object",
+                      "example": { "database": { "status": "up" } },
+                      "additionalProperties": {
+                        "type": "object",
+                        "properties": { "status": { "type": "string" } },
+                        "additionalProperties": { "type": "string" }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "The Health Check is not successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "string", "example": "error" },
+                    "info": {
+                      "type": "object",
+                      "example": { "database": { "status": "up" } },
+                      "additionalProperties": {
+                        "type": "object",
+                        "properties": { "status": { "type": "string" } },
+                        "additionalProperties": { "type": "string" }
+                      },
+                      "nullable": true
+                    },
+                    "error": {
+                      "type": "object",
+                      "example": {
+                        "redis": {
+                          "status": "down",
+                          "message": "Could not connect"
+                        }
+                      },
+                      "additionalProperties": {
+                        "type": "object",
+                        "properties": { "status": { "type": "string" } },
+                        "additionalProperties": { "type": "string" }
+                      },
+                      "nullable": true
+                    },
+                    "details": {
+                      "type": "object",
+                      "example": {
+                        "database": { "status": "up" },
+                        "redis": {
+                          "status": "down",
+                          "message": "Could not connect"
+                        }
+                      },
+                      "additionalProperties": {
+                        "type": "object",
+                        "properties": { "status": { "type": "string" } },
+                        "additionalProperties": { "type": "string" }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": ["Health-Check"]
+      }
+    },
+    "/user/register": {
+      "post": {
+        "operationId": "UserController_register",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/RegisterUserDto" }
+            }
+          }
+        },
+        "responses": { "201": { "description": "" } },
+        "tags": ["User"]
+      }
+    },
+    "/product": {
+      "post": {
+        "operationId": "ProductController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CreateProductDto" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ProductEntity" }
+              }
+            }
+          },
+          "401": { "description": "Unauthorized" }
+        },
+        "tags": ["Product"],
+        "security": [{ "bearer": [] }]
+      },
+      "get": {
+        "operationId": "ProductController_findAll",
+        "parameters": [
+          {
+            "name": "search",
+            "required": true,
+            "in": "query",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "limit",
+            "required": true,
+            "in": "query",
+            "schema": { "minimum": 0, "default": 25, "type": "number" }
+          },
+          {
+            "name": "offset",
+            "required": true,
+            "in": "query",
+            "schema": { "minimum": 0, "default": 0, "type": "number" }
+          }
+        ],
+        "responses": { "200": { "description": "" } },
+        "tags": ["Product"]
+      }
+    },
+    "/product/{id}": {
+      "get": {
+        "operationId": "ProductController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "number" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ProductEntity" }
+              }
+            }
+          }
+        },
+        "tags": ["Product"]
+      },
+      "put": {
+        "operationId": "ProductController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/UpdateProductDto" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ProductEntity" }
+              }
+            }
+          },
+          "401": { "description": "Unauthorized" }
+        },
+        "tags": ["Product"],
+        "security": [{ "bearer": [] }]
+      },
+      "delete": {
+        "operationId": "ProductController_remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": { "description": "" },
+          "401": { "description": "Unauthorized" }
+        },
+        "tags": ["Product"],
+        "security": [{ "bearer": [] }]
+      }
+    },
+    "/order": {
+      "post": {
+        "operationId": "OrderController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CreateOrderDto" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/OrderEntity" }
+              }
+            }
+          },
+          "401": { "description": "Unauthorized" }
+        },
+        "tags": ["Order"],
+        "security": [{ "bearer": [] }]
+      },
+      "get": {
+        "operationId": "OrderController_findAll",
+        "parameters": [
+          {
+            "name": "orderId",
+            "required": true,
+            "in": "query",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "limit",
+            "required": true,
+            "in": "query",
+            "schema": { "minimum": 0, "default": 25, "type": "number" }
+          },
+          {
+            "name": "offset",
+            "required": true,
+            "in": "query",
+            "schema": { "minimum": 0, "default": 0, "type": "number" }
+          }
+        ],
+        "responses": {
+          "200": { "description": "" },
+          "401": { "description": "Unauthorized" }
+        },
+        "tags": ["Order"],
+        "security": [{ "bearer": [] }]
+      }
+    },
+    "/order/orders-user": {
+      "get": {
+        "operationId": "OrderController_findByUser",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/OrderEntity" }
+                }
+              }
+            }
+          },
+          "401": { "description": "Unauthorized" }
+        },
+        "tags": ["Order"],
+        "security": [{ "bearer": [] }]
+      }
+    },
+    "/order/{id}": {
+      "get": {
+        "operationId": "OrderController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/OrderEntity" }
+              }
+            }
+          },
+          "401": { "description": "Unauthorized" }
+        },
+        "tags": ["Order"],
+        "security": [{ "bearer": [] }]
+      },
+      "patch": {
+        "operationId": "OrderController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/UpdateOrderDto" }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "" },
+          "401": { "description": "Unauthorized" }
+        },
+        "tags": ["Order"],
+        "security": [{ "bearer": [] }]
+      },
+      "delete": {
+        "operationId": "OrderController_remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": { "description": "" },
+          "401": { "description": "Unauthorized" }
+        },
+        "tags": ["Order"],
+        "security": [{ "bearer": [] }]
+      }
+    },
+    "/order/order-status/{id}": {
+      "patch": {
+        "operationId": "OrderController_updateStatus",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/UpdateOrderStatusDto" }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "" },
+          "401": { "description": "Unauthorized" }
+        },
+        "tags": ["Order"],
+        "security": [{ "bearer": [] }]
+      }
+    }
+  },
+  "info": {
+    "title": "Blink NestJS Boilerplate",
+    "description": "This API is just an example case.For more information please contact https://www.blink-me-code.dev/contact",
+    "version": "v1.0.0",
+    "contact": {}
+  },
+  "tags": [],
+  "servers": [],
+  "components": {
+    "securitySchemes": {
+      "bearer": { "scheme": "bearer", "bearerFormat": "JWT", "type": "http" }
+    },
+    "schemas": {
+      "LoginUserDto": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string",
+            "maxLength": 150,
+            "example": "admin@email.com"
+          },
+          "password": {
+            "type": "string",
+            "maxLength": 150,
+            "example": "admin1234"
+          }
+        },
+        "required": ["username", "password"]
+      },
+      "RegisterUserDto": {
+        "type": "object",
+        "properties": {
+          "username": { "type": "string", "maxLength": 150 },
+          "password": { "type": "string", "maxLength": 150 },
+          "firstName": { "type": "string", "maxLength": 150 },
+          "lastName": { "type": "string", "maxLength": 150 },
+          "role": { "type": "string", "enum": ["USER", "ADMIN"] },
+          "email": { "type": "string" },
+          "avatar": { "type": "string" },
+          "phone": { "type": "string" }
+        },
+        "required": ["username", "password", "firstName", "lastName"]
+      },
+      "CreateProductDto": {
+        "type": "object",
+        "properties": {
+          "sku": { "type": "string", "maxLength": 150 },
+          "name": { "type": "string", "maxLength": 150 },
+          "description": { "type": "string" },
+          "pic": { "type": "string" },
+          "price": { "type": "number" }
+        },
+        "required": ["sku", "name", "price"]
+      },
+      "UserEntity": {
+        "type": "object",
+        "properties": {
+          "firstName": { "type": "string" },
+          "lastName": { "type": "string" },
+          "username": { "type": "string" },
+          "password": { "type": "string" },
+          "role": { "type": "string", "enum": ["USER", "ADMIN"] },
+          "email": { "type": "string" },
+          "avatar": { "type": "string" },
+          "phone": { "type": "string" },
+          "isActive": { "type": "boolean" },
+          "orders": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/OrderEntity" }
+          },
+          "id": { "type": "string" },
+          "createdAt": { "format": "date-time", "type": "string" },
+          "updatedAt": { "format": "date-time", "type": "string" }
+        },
+        "required": [
+          "username",
+          "password",
+          "role",
+          "orders",
+          "id",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "ProductEntity": {
+        "type": "object",
+        "properties": {
+          "sku": { "type": "string" },
+          "name": { "type": "string" },
+          "description": { "type": "string" },
+          "pic": { "type": "string" },
+          "price": { "type": "number" },
+          "isAvailable": { "type": "boolean" },
+          "orders": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/OrderEntity" }
+          },
+          "id": { "type": "string" },
+          "createdAt": { "format": "date-time", "type": "string" },
+          "updatedAt": { "format": "date-time", "type": "string" }
+        },
+        "required": [
+          "sku",
+          "name",
+          "price",
+          "orders",
+          "id",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "OrderEntity": {
+        "type": "object",
+        "properties": {
+          "total": { "type": "number" },
+          "status": {
+            "enum": [
+              "DRAFTED",
+              "PROCESSING",
+              "DELIVERING",
+              "REJECTED",
+              "COMPLETED"
+            ],
+            "type": "string"
+          },
+          "user": { "$ref": "#/components/schemas/UserEntity" },
+          "products": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/ProductEntity" }
+          },
+          "id": { "type": "string" },
+          "createdAt": { "format": "date-time", "type": "string" },
+          "updatedAt": { "format": "date-time", "type": "string" }
+        },
+        "required": [
+          "total",
+          "status",
+          "user",
+          "products",
+          "id",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "UpdateProductDto": {
+        "type": "object",
+        "properties": {
+          "isAvailable": { "type": "boolean" },
+          "name": { "type": "string", "maxLength": 150 },
+          "description": { "type": "string" },
+          "pic": { "type": "string" },
+          "price": { "type": "number" }
+        },
+        "required": ["isAvailable"]
+      },
+      "CreateOrderDto": {
+        "type": "object",
+        "properties": {
+          "products": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/ProductEntity" }
+          }
+        },
+        "required": ["products"]
+      },
+      "UpdateOrderStatusDto": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "DRAFTED",
+              "PROCESSING",
+              "DELIVERING",
+              "REJECTED",
+              "COMPLETED"
+            ]
+          }
+        },
+        "required": ["status"]
+      },
+      "UpdateOrderDto": {
+        "type": "object",
+        "properties": {
+          "products": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/ProductEntity" }
+          }
+        },
+        "required": ["products"]
+      }
+    }
+  },
+  "externalDocs": { "description": "Postman Collection", "url": "/api-json" }
+}
